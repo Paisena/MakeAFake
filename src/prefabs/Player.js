@@ -10,6 +10,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setGravityY(100)
 
         this.isJump = false
+        this.isGround = true
 
         this.jumpForce = -100
         this.velocity = 100
@@ -34,12 +35,17 @@ class JumpState extends State {
 
         let moveDirection = new Phaser.Math.Vector2(0, 0)
         
-        console.log("jumps")
         // normalize movement vector, update hero position, and play proper animation
-        moveDirection.normalize()
-        player.setVelocityY(player.jumpForce)
+        if(player.isGround)
+        {
+            console.log("jumps")
+            moveDirection.normalize()
+            player.setVelocityY(player.jumpForce)
+        }
+        
 
         this.stateMachine.transition('idle')
+        player.isGround = false
         return
         //player.anims.play(`walk-${player.direction}`, true)
     }

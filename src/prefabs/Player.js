@@ -22,10 +22,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             hurt: new HurtState(),
         }, [scene, this])
     }
-
-    
-
-
 }
 
 class JumpState extends State {
@@ -43,7 +39,6 @@ class JumpState extends State {
             player.setVelocityY(player.jumpForce)
         }
         
-
         this.stateMachine.transition('idle')
         player.isGround = false
         return
@@ -54,7 +49,6 @@ class JumpState extends State {
 class IdleState extends State {
     enter(scene, player) {
         player.setVelocityX(0)
-
     }
 
     execute(scene, player) {
@@ -65,7 +59,7 @@ class IdleState extends State {
             this.stateMachine.transition('move')
             return
         }
-        if(up.isDown && !this.isJump) {
+        if(up.isDown && player.isGround ) {
             this.stateMachine.transition('jump')
             return
         }
@@ -81,7 +75,7 @@ class MoveState extends State {
             this.stateMachine.transition('idle')
             return
         }
-        if(up.isDown && !this.isJump) {
+        if(up.isDown && player.isGround) {
             this.stateMachine.transition('jump')
             return
         }

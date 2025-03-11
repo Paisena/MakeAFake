@@ -5,7 +5,7 @@ class Menu extends Phaser.Scene {
 
     preload() {
         // load images/tile sprites
-        this.load.path = './assests/'
+        this.load.path = './assets/'
         this.load.image('pFloor', './pFloor.png')
 
         // load sounds

@@ -31,10 +31,8 @@ class JumpState extends State {
 
         let moveDirection = new Phaser.Math.Vector2(0, 0)
         
-        // normalize movement vector, update hero position, and play proper animation
         if(player.isGround)
         {
-            console.log("jumps")
             moveDirection.normalize()
             player.setVelocityY(player.jumpForce)
         }

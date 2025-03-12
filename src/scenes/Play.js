@@ -32,18 +32,21 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         }
 
-        this.stateTrackerUI = this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5)
-        this.stateTrackerBossUI = this.add.text(game.config.width/2, game.config.height/2 + 100, 'GAME OVER', scoreConfig).setOrigin(0.5)
+        this.stateTrackerUI = this.add.text(game.config.width/2, game.config.height/2, '', scoreConfig).setOrigin(0.5)
+        this.stateTrackerBossUI = this.add.text(game.config.width/2, game.config.height/2 + 100, '', scoreConfig).setOrigin(0.5)
         
         this.physics.add.collider(this.player, this.floor, (player, floor) => {
             this.player.isGround = true
         })
 
-        this.physics.add.collider(this.player, this.boss, () => {
+        this.physics.add.overlap(this.player, this.boss, () => {
             console.log("hey")
+            
         })
 
-        this.physics.add.collider(this.boss, this.floor)
+        this.physics.add.collider(this.boss, this.floor, () => {
+            this.boss.isJumping = false
+        })
 
     }
 
@@ -52,8 +55,9 @@ class Play extends Phaser.Scene {
         this.bossFSM.step()
         this.boss.update()
         this.bomb.update()
-        this.physics.add.collider(this.player, this.boss.bombGroup, (player, bomb) => {
+        this.physics.add.overlap(this.player, this.boss.bombGroup, (player, bomb) => {
             console.log("collided")
+            this.playerFSM.transition('hurt')
             bomb.destroy()
         })
 

@@ -22,6 +22,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             move: new MoveState(),
             jump: new JumpState(),
             hurt: new HurtState(),
+            attack: new AttackState(),
         }, [scene, this])
     }
 
@@ -31,8 +32,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
        } 
     }
 
+    damaged() {
+        //will have: change lives count on UI, handle player movement due to dmg
+        this.lives -= 1
+    }
+
     gameOver() {
         return
+    }
+}
+
+class AttackState extends State {
+    enter (scene, player) {
+        player.setVelocityY(-250)
+
+        this.stateMachine.transition('idle')
     }
 }
 
@@ -110,13 +124,12 @@ class HurtState extends State {
     enter(scene, player) {
         player.setVelocityY(-10)
         console.log("hurt")
-        player.lives -= 1
+        player.damaged()
         player.checkLives()
         player.gameOver()
         scene.time.delayedCall(100, () => {
             player.clearTint()
             this.stateMachine.transition('idle')
-        })
-        
+        }) 
     }
 }

@@ -18,6 +18,13 @@ class Play extends Phaser.Scene {
         this.player = new Player(this, 200, 750, 'player', 0)
         this.boss = new Boss(this, 400, 750, 'boss', 0)
         this.bomb = new Bomb(this, 1900,750, 'bomb', 0)
+
+        this.livesArray = []
+        
+        for (let i = 0; i < this.player.lives; i++) {
+            this.life = this.add.sprite(100 * (i + 1) , 100, 'life')
+            this.livesArray.push(this.life)
+        }
         
         let scoreConfig = {
             fontFamily: 'Courier',
@@ -40,14 +47,24 @@ class Play extends Phaser.Scene {
         })
 
         this.physics.add.overlap(this.player, this.boss, () => {
-            console.log("hey")
+            if(!this.boss.isDamaged)
+            {
+                console.log("hey")
+                this.playerFSM.transition("attack")
+                this.bossFSM.transition("hurt")
+            }
             
         })
 
         this.physics.add.collider(this.boss, this.floor, () => {
             this.boss.isJumping = false
         })
+    }
 
+    updatelifeUI() {
+        let sprite = this.livesArray.pop()
+        sprite.destroy(true)
+        console.log(sprite)
     }
 
     update() {
@@ -59,10 +76,11 @@ class Play extends Phaser.Scene {
             console.log("collided")
             this.playerFSM.transition('hurt')
             bomb.destroy()
+            this.updatelifeUI()
         })
 
         this.stateTrackerBossUI.text = this.bossFSM.state
-        this.stateTrackerUI.text = this.player.isGround
+        this.stateTrackerUI.text = this.boss.isDamaged
     }
 
     

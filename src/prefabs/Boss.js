@@ -9,7 +9,9 @@ class Boss extends Phaser.Physics.Arcade.Sprite {
         this.body.setCollideWorldBounds(true)
         this.body.setGravityY(100)
 
+        this.lives = 5
         this.isJumping = false
+        this.isDamaged = false
 
         this.bombArray = []
         this.bombGroup = scene.add.group()
@@ -29,6 +31,20 @@ class Boss extends Phaser.Physics.Arcade.Sprite {
             this.bombArray[i].update()
         }
     }
+
+    checkLives() {
+            if (this.lives <= 0) {
+                console.log("killed boss")
+            }
+    }
+
+    damaged() {
+        this.lives -= 1
+        this.checkLives()
+        this.isDamaged = true
+    }
+
+    
 }
 
 class BossJumpState extends State {
@@ -61,6 +77,11 @@ class BossJumpState extends State {
 class BossIdleState extends State {
     enter(scene, boss) {
         scene.time.delayedCall(1000, () => {
+            if(this.stateMachine.state != "idle") {
+                 console.log("canceld idle trigger")
+                 return
+            }
+            console.log("playing idle decision")
             //pick random number and then based on that choose attack 
 
             let select = Math.floor(Math.random() * 4)
@@ -75,8 +96,8 @@ class BossIdleState extends State {
                     //console.log("transionton to jump")
                     return 
                 }
-                
-            }if (select == 0)
+            }
+            if (select == 0)
             {
                 this.stateMachine.transition('idle')
                 //console.log("transiotion to idle")
@@ -103,16 +124,20 @@ class BossMoveState extends State {
     execute(scene, boss) {
         //will implement movement later
         this.stateMachine.transition("idle")
+        return
     }
 }
 
 class BossHurtState extends State {
     enter(scene, boss) {
         boss.setVelocity(0)
-
-        scene.time.delayedCall(100, () => {
+        boss.damaged()
+        scene.time.delayedCall(3000, () => {
             boss.clearTint()
+            boss.isDamaged = false
             this.stateMachine.transition('idle')
+            console.log("damge done")
+            return
         })
     }
 }
@@ -124,6 +149,7 @@ class BossAttackState extends State {
         boss.bombGroup.add(bomb)
         
         this.stateMachine.transition("idle")
+        return
     }
 }
 

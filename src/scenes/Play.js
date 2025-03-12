@@ -15,11 +15,12 @@ class Play extends Phaser.Scene {
         this.keys = this.input.keyboard.createCursorKeys()
         this.keys.HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H)
         
-        this.player = new Player(this, 200, 750, 'player', 0)
-        this.boss = new Boss(this, 400, 750, 'boss', 0)
-        this.bomb = new Bomb(this, 1900,750, 'bomb', 0)
-
+        this.player = new Player(this, 200, 680, 'player', 0)
+        this.boss = new Boss(this, 700, 500, 'boss', 0)
+        this.playerSide = -1
         this.livesArray = []
+
+        this.isPlaying = true
         
         for (let i = 0; i < this.player.lives; i++) {
             this.life = this.add.sprite(100 * (i + 1) , 100, 'life')
@@ -41,10 +42,14 @@ class Play extends Phaser.Scene {
 
         this.stateTrackerUI = this.add.text(game.config.width/2, game.config.height/2, '', scoreConfig).setOrigin(0.5)
         this.stateTrackerBossUI = this.add.text(game.config.width/2, game.config.height/2 + 100, '', scoreConfig).setOrigin(0.5)
-        
+
+        this.gameOverUI = this.add.text(game.config.width/2, game.config.height/2, 'Game Over!', scoreConfig).setOrigin(0.5)
+        this.gameOverUI.visible = false
+
         this.physics.add.collider(this.player, this.floor, (player, floor) => {
             this.player.isGround = true
         })
+
 
         this.physics.add.overlap(this.player, this.boss, () => {
             if(!this.boss.isDamaged)
@@ -52,6 +57,9 @@ class Play extends Phaser.Scene {
                 console.log("hey")
                 this.playerFSM.transition("attack")
                 this.bossFSM.transition("hurt")
+                if (this.boss.lives <= 0) {
+                    this.gameOver(true)
+                }
             }
             
         })
@@ -64,24 +72,55 @@ class Play extends Phaser.Scene {
     updatelifeUI() {
         let sprite = this.livesArray.pop()
         sprite.destroy(true)
-        console.log(sprite)
+
+        if(this.livesArray.length == 0) {
+            this.gameOver(false)
+        }
+    }
+
+    checkSidePlayer() {
+        if (this.player.x > this.boss.x) {
+            this.playerSide = -1
+        }
+
+        else {
+            this.playerSide = 1
+        }
+    }
+
+    gameOver(winner) {
+        this.player.body.moves = false
+        this.isPlaying = false
+        this.gameOverUI.visible = true
+        this.bossFSM.transition("dead")
+        if(winner) {
+            this.gameOverUI.text = "You Win!"
+        }
+        else {
+            this.gameOverUI.text = "Game Over"
+        }
     }
 
     update() {
-        this.playerFSM.step()
-        this.bossFSM.step()
-        this.boss.update()
-        this.bomb.update()
-        this.physics.add.overlap(this.player, this.boss.bombGroup, (player, bomb) => {
-            console.log("collided")
-            this.playerFSM.transition('hurt')
-            bomb.destroy()
-            this.updatelifeUI()
-        })
+        if(this.isPlaying) {
+            this.playerFSM.step()
+            this.bossFSM.step()
+            this.boss.update()
+            this.physics.add.overlap(this.player, this.boss.bombGroup, (player, bomb) => {
+                console.log("collided")
+                this.playerFSM.transition('hurt')
+                bomb.destroy()
+                this.updatelifeUI()
+            })
 
-        this.stateTrackerBossUI.text = this.bossFSM.state
-        this.stateTrackerUI.text = this.boss.isDamaged
-    }
-
+            this.stateTrackerBossUI.text = this.bossFSM.state
+            this.stateTrackerUI.text = this.boss.isDamaged
     
+            this.checkSidePlayer()
+        }
+        else {
+
+        }
+        
+    }
 }

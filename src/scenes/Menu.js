@@ -8,6 +8,9 @@ class Menu extends Phaser.Scene {
         this.load.path = './assets/'
         this.load.image('pFloor', './pFloor.png')
         this.load.image('life', './LifeIcon.png')
+        this.load.image('bomb','./bomb.png')
+        this.load.image('player','./player.png')
+        this.load.image('boss','./boss.png')
         // load sounds
         
     }

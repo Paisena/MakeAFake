@@ -5,7 +5,8 @@ class Boss extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this)
         scene.physics.add.existing(this)
 
-        this.body.setSize(this.width / 2, this.height / 2)
+        this.body.setSize(this.width - 200, this.height / 2)
+        this.body.setOffset(100, 250)
         this.body.setCollideWorldBounds(true)
         this.body.setGravityY(100)
 
@@ -21,7 +22,8 @@ class Boss extends Phaser.Physics.Arcade.Sprite {
             move: new BossMoveState(),
             jump: new BossJumpState(),
             hurt: new BossHurtState(),
-            attack: new BossAttackState()
+            attack: new BossAttackState(),
+            dead: new BossDeadState()
         }, [scene, this])
     }
 
@@ -47,6 +49,12 @@ class Boss extends Phaser.Physics.Arcade.Sprite {
     
 }
 
+class BossDeadState extends State {
+    enter(scene, boss) {
+
+    }
+}
+
 class BossJumpState extends State {
     enter(scene, boss) {
         let moveVector = new Phaser.Math.Vector2(0,0)
@@ -54,36 +62,25 @@ class BossJumpState extends State {
         boss.setVelocityY(-100)
         this.stateMachine.transition("idle")
         return
-        // const { left, right, up, down, space, shift } = scene.keys
-        // const HKey = scene.keys.HKey
-
-        // let moveDirection = new Phaser.Math.Vector2(0, 0)
-        
-        // // normalize movement vector, update hero position, and play proper animation
-        // if(player.isGround)
-        // {
-        //     console.log("jumps")
-        //     moveDirection.normalize()
-        //     player.setVelocityY(player.jumpForce)
-        // }
-        
-        // this.stateMachine.transition('idle')
-        // player.isGround = false
-        // return
-        // //player.anims.play(`walk-${player.direction}`, true)
     }
 }
 
 class BossIdleState extends State {
     enter(scene, boss) {
+        if(boss.lives <= 0)
+        {
+            return
+        }
+
         scene.time.delayedCall(1000, () => {
             if(this.stateMachine.state != "idle") {
                  console.log("canceld idle trigger")
                  return
             }
-            console.log("playing idle decision")
-            //pick random number and then based on that choose attack 
 
+            console.log("playing idle decision")
+
+            //pick random number and then based on that choose attack 
             let select = Math.floor(Math.random() * 4)
             if (select == 2)
             {
@@ -130,6 +127,9 @@ class BossMoveState extends State {
 
 class BossHurtState extends State {
     enter(scene, boss) {
+        if(boss.lives <= 0) {
+            return
+        }
         boss.setVelocity(0)
         boss.damaged()
         scene.time.delayedCall(3000, () => {
@@ -144,7 +144,9 @@ class BossHurtState extends State {
 
 class BossAttackState extends State {
     enter(scene, boss) {
-        let bomb = new Bomb(scene, 1900,790, 'bomb', 0)
+        // determine player direction
+        
+        let bomb = new Bomb(scene, boss.x, boss.y+200, 'bomb', 0, scene.playerSide)
         boss.bombArray.push(bomb)
         boss.bombGroup.add(bomb)
         
@@ -152,4 +154,3 @@ class BossAttackState extends State {
         return
     }
 }
-

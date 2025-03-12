@@ -5,7 +5,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this)
         scene.physics.add.existing(this)
 
-        this.body.setSize(this.width / 2, this.height / 2)
+        this.body.setSize(this.width / 2 + 12, this.height / 2-10)
+        this.body.setOffset(22, this.height/2)
         this.body.setCollideWorldBounds(true)
         this.body.setGravityY(100)
 
@@ -44,7 +45,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
 class AttackState extends State {
     enter (scene, player) {
-        player.setVelocityY(-250)
+        player.setVelocityY(-100)
 
         this.stateMachine.transition('idle')
     }

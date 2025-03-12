@@ -15,12 +15,24 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.jumpForce = -100
         this.velocity = 100
 
+        this.lives = 3
+
         scene.playerFSM = new StateMachine('idle', {
             idle: new IdleState(),
             move: new MoveState(),
             jump: new JumpState(),
             hurt: new HurtState(),
         }, [scene, this])
+    }
+
+    checkLives() {
+       if (this.lives <= 0) {
+        console.log("DEAD HAHAHHAHAHHAHAH")
+       } 
+    }
+
+    gameOver() {
+        return
     }
 }
 
@@ -96,11 +108,15 @@ class MoveState extends State {
 
 class HurtState extends State {
     enter(scene, player) {
-        player.setVelocity(0)
-
+        player.setVelocityY(-10)
+        console.log("hurt")
+        player.lives -= 1
+        player.checkLives()
+        player.gameOver()
         scene.time.delayedCall(100, () => {
             player.clearTint()
             this.stateMachine.transition('idle')
         })
+        
     }
 }

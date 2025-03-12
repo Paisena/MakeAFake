@@ -9,6 +9,8 @@ class Boss extends Phaser.Physics.Arcade.Sprite {
         this.body.setCollideWorldBounds(true)
         this.body.setGravityY(100)
 
+        this.isJumping = false
+
         this.bombArray = []
         this.bombGroup = scene.add.group()
 
@@ -61,8 +63,20 @@ class BossIdleState extends State {
         scene.time.delayedCall(1000, () => {
             //pick random number and then based on that choose attack 
 
-            const select = Math.floor(Math.random() * 4);
-            if (select == 0)
+            let select = Math.floor(Math.random() * 4)
+            if (select == 2)
+            {
+                if (boss.isJumping) {
+                    select = Math.floor(Math.random() * 4)
+                }
+                else {
+                    this.stateMachine.transition("jump")
+                    boss.isJumping = true
+                    //console.log("transionton to jump")
+                    return 
+                }
+                
+            }if (select == 0)
             {
                 this.stateMachine.transition('idle')
                 //console.log("transiotion to idle")
@@ -74,12 +88,7 @@ class BossIdleState extends State {
                 //console.log("transition to attack")
                 return
             }
-            if (select == 2)
-            {
-                this.stateMachine.transition("jump")
-                //console.log("transionton to jump")
-                return
-            }
+            
             if (select == 3)
             {
                 this.stateMachine.transition("move")

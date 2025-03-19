@@ -11,6 +11,7 @@ class Menu extends Phaser.Scene {
         this.load.image('bomb','./bomb.png')
         this.load.image('player','./player.png')
         this.load.image('boss','./boss.png')
+        this.load.image('background','./background.png')
         // load sounds
         
     }

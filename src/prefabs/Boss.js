@@ -6,9 +6,9 @@ class Boss extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this)
 
         this.body.setSize(this.width - 200, this.height / 2)
-        this.body.setOffset(100, 250)
+        this.body.setOffset(100, 275)
         this.body.setCollideWorldBounds(true)
-        this.body.setGravityY(100)
+        this.body.setGravityY(500)
 
         this.lives = 5
         this.isJumping = false
@@ -59,7 +59,7 @@ class BossJumpState extends State {
     enter(scene, boss) {
         let moveVector = new Phaser.Math.Vector2(0,0)
         moveVector.y = -1
-        boss.setVelocityY(-100)
+        boss.setVelocityY(-300)
         this.stateMachine.transition("idle")
         return
     }
@@ -127,16 +127,17 @@ class BossMoveState extends State {
 
 class BossHurtState extends State {
     enter(scene, boss) {
+        boss.alpha = 0.5
         if(boss.lives <= 0) {
             return
         }
         boss.setVelocity(0)
         boss.damaged()
-        scene.time.delayedCall(3000, () => {
-            boss.clearTint()
+        scene.time.delayedCall(2000, () => {
             boss.isDamaged = false
             this.stateMachine.transition('idle')
             console.log("damge done")
+            boss.alpha =1
             return
         })
     }
@@ -146,7 +147,7 @@ class BossAttackState extends State {
     enter(scene, boss) {
         // determine player direction
         
-        let bomb = new Bomb(scene, boss.x, boss.y+200, 'bomb', 0, scene.playerSide)
+        let bomb = new Bomb(scene, boss.x, boss.y+100, 'bomb', 0, scene.playerSide)
         boss.bombArray.push(bomb)
         boss.bombGroup.add(bomb)
         

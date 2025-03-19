@@ -1,5 +1,5 @@
 class Player extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, frame) {
+    constructor(scene, x, y, texture, frame, dir) {
         super(scene, x, y, texture, frame)
 
         scene.add.existing(this)
@@ -8,13 +8,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setSize(this.width / 2 + 12, this.height / 2-10)
         this.body.setOffset(22, this.height/2)
         this.body.setCollideWorldBounds(true)
-        this.body.setGravityY(100)
+        this.body.setGravityY(1500)
 
         this.isJump = false
         this.isGround = true
 
-        this.jumpForce = -100
-        this.velocity = 100
+        this.jumpForce = -900
+        this.velocity = 900
 
         this.lives = 3
 
@@ -45,9 +45,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
 class AttackState extends State {
     enter (scene, player) {
-        player.setVelocityY(-100)
-
-        this.stateMachine.transition('idle')
+        player.setVelocityX(-1000 * scene.playerSide)
+        player.setVelocityY(-1000)
+        player.alpha = 0.5
+        scene.time.delayedCall(1500, () => {
+            this.stateMachine.transition('idle')
+            player.alpha = 1
+            return
+        })
     }
 }
 
@@ -95,13 +100,22 @@ class MoveState extends State {
     execute(scene, player) {
         const { left, right, up, down, space, shift } = scene.keys
         const HKey = scene.keys.HKey
-
+        
+        if(left.isDown) {
+            player.flipX = false
+            player.dir = -1
+        }
+        if(right.isDown) {
+            player.flipX = true
+            player.dir = 1
+        }
         if(!(left.isDown || right.isDown)) {
             this.stateMachine.transition('idle')
             return
         }
         if(up.isDown && player.isGround) {
             this.stateMachine.transition('jump')
+            player.flipX = false
             return
         }
 
@@ -123,7 +137,7 @@ class MoveState extends State {
 
 class HurtState extends State {
     enter(scene, player) {
-        player.setVelocityY(-10)
+        player.setVelocityX(-1000 * scene.playerSide)
         console.log("hurt")
         player.damaged()
         player.checkLives()

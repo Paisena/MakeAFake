@@ -13,6 +13,9 @@ class Menu extends Phaser.Scene {
         this.load.image('boss','./boss.png')
         this.load.image('background','./background.png')
         // load sounds
+        this.load.audio('jump','./jumpSFX.mp3')
+        this.load.audio('bomb', './bombSFX.mp3')
+        this.load.audio('hurt', './damageSFX.wav')
         
     }
 

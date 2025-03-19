@@ -58,6 +58,8 @@ class AttackState extends State {
 
 class JumpState extends State {
     enter(scene, player) {
+        scene.sound.play('jump', {volume:0.1})
+        
         const { left, right, up, down, space, shift } = scene.keys
         const HKey = scene.keys.HKey
 

@@ -127,6 +127,7 @@ class BossMoveState extends State {
 
 class BossHurtState extends State {
     enter(scene, boss) {
+        scene.sound.play('hurt', {volume:0.1})
         boss.alpha = 0.5
         if(boss.lives <= 0) {
             return
@@ -146,7 +147,7 @@ class BossHurtState extends State {
 class BossAttackState extends State {
     enter(scene, boss) {
         // determine player direction
-        
+        scene.sound.play('bomb', {volume:0.1})
         let bomb = new Bomb(scene, boss.x, boss.y+100, 'bomb', 0, scene.playerSide)
         boss.bombArray.push(bomb)
         boss.bombGroup.add(bomb)

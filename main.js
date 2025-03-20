@@ -1,7 +1,12 @@
-// Project: Endless Runner
+// Project: Make A Fake
 // Name: Jonathan Ng
-// Game Title: Car Multitasking
-// Approximate Hours: 15 Hrs 
+// Game Title: Beetman
+
+// phaser components used:
+// physics
+// camera
+// text
+// timers
 
 'use strict'
 
@@ -17,7 +22,7 @@ const config = {
             debug: false
         }
     },
-    scene: [ Menu , Play ]
+    scene: [ Menu , Play, Credits, Instructions ]
 }
 
 const game = new Phaser.Game(config)

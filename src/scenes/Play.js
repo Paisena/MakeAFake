@@ -9,13 +9,15 @@ class Play extends Phaser.Scene {
         
         console.log("play started")
         
+        
         this.floor = this.physics.add.staticBody(0,685,1999,1000)
         //this.floor.setImmovable(true)
         
         this.cameras.main.setBackgroundColor("#FACADE")
         
         this.keys = this.input.keyboard.createCursorKeys()
-        this.keys.HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H)
+        this.keys.keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
+        this.keys.keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER)
         
         this.player = new Player(this, 200, 550, 'player', 0)
         this.boss = new Boss(this, 1500, 450, 'boss', 0)
@@ -23,7 +25,9 @@ class Play extends Phaser.Scene {
         this.boss.scaleY = .8
         this.playerSide = -1
         this.livesArray = []
-
+        
+        this.gameOverTxt = this.add.image(this.game.config.width/2, this.game.config.height/2, 'gameOver')
+        this.gameOverTxt.visible = false
         this.isPlaying = true
         
         for (let i = 0; i < this.player.lives; i++) {
@@ -56,45 +60,18 @@ class Play extends Phaser.Scene {
 
         this.physics.add.overlap(this.player, this.boss, () => {
 
-            // if(this.boss.body.touching.down)
-            // {
-            //     console.log("DOWN")
-            // }
-            // if(this.boss.body.touching.up)
-            // {
-            //     console.log("UP")
-            // }
-            // if(this.boss.body.touching.left)
-            // {
-            //     console.log("LEFT")
-            // }
-            // if(this.boss.body.touching.right)
-            // {
-            //     console.log("RIGHT")
-            // }
-            if(!this.boss.isDamaged /*&& this.boss.body.touching.up*/)
+           
+            if(!this.boss.isDamaged)
             {
                 console.log("hey")
                 this.playerFSM.transition("attack")
                 this.bossFSM.transition("hurt")
-                //this.player.setVelocityY(-1000)
                 if (this.boss.lives <= 0) {
                     this.gameOver(true)
                 }
                 return
             }
-            // if(this.boss.isDamaged)
-            // {
-                
-            //     return
-            // }
-            // else if(!this.boss.isDamaged && !this.boss.body.touching.up)
-
-            // {
-            //     console.log("player hit but not boss")
-            //     this.playerFSM.transition("hurt")
-            //     this.updatelifeUI()
-            // }
+            
             
         })
 
@@ -123,6 +100,7 @@ class Play extends Phaser.Scene {
     }
 
     gameOver(winner) {
+        this.gameOverTxt.visible = true
         this.player.body.moves = false
         this.isPlaying = false
         this.gameOverUI.visible = true
@@ -160,7 +138,14 @@ class Play extends Phaser.Scene {
             this.checkSidePlayer()
         }
         else {
-
+            if (Phaser.Input.Keyboard.JustDown(this.keys.keyENTER)) {
+                console.log("restart pressed")
+                this.scene.restart()
+            }
+            if (Phaser.Input.Keyboard.JustDown(this.keys.keySPACE)) {
+                console.log("restart pressed")
+                this.scene.start('creditsScene')
+            }
         }
         
     }

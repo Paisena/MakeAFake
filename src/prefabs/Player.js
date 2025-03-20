@@ -139,11 +139,12 @@ class MoveState extends State {
 
 class HurtState extends State {
     enter(scene, player) {
-        player.setVelocityX(-1000 * scene.playerSide)
         console.log("hurt")
         player.damaged()
         player.checkLives()
         player.gameOver()
+        player.setVelocityX(-1000 * scene.playerSide)
+        player.setVelocityY(-1000)
         scene.time.delayedCall(100, () => {
             player.clearTint()
             this.stateMachine.transition('idle')

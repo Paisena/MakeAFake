@@ -12,6 +12,10 @@ class Menu extends Phaser.Scene {
         this.load.image('player','./player.png')
         this.load.image('boss','./boss.png')
         this.load.image('background','./background.png')
+        this.load.image('gameOver','./endscreen.png')
+        this.load.image('credits','./Credits.png')
+        this.load.image('instructions', './instructions.png')
+        
         // load sounds
         this.load.audio('jump','./jumpSFX.mp3')
         this.load.audio('bomb', './bombSFX.mp3')
@@ -29,7 +33,7 @@ class Menu extends Phaser.Scene {
 
     update () {
         if (Phaser.Input.Keyboard.JustDown(keyENTER)) {
-            this.scene.start('playScene')
+            this.scene.start('instructionsScene')
         }
     }
 }

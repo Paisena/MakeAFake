@@ -48,7 +48,7 @@ class AttackState extends State {
         player.setVelocityX(-1000 * scene.playerSide)
         player.setVelocityY(-1000)
         player.alpha = 0.5
-        scene.time.delayedCall(1500, () => {
+        scene.time.delayedCall(3000, () => {
             this.stateMachine.transition('idle')
             player.alpha = 1
             return

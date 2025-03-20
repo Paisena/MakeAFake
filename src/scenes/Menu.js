@@ -15,6 +15,7 @@ class Menu extends Phaser.Scene {
         this.load.image('gameOver','./endscreen.png')
         this.load.image('credits','./Credits.png')
         this.load.image('instructions', './instructions.png')
+        this.load.image('title', './title.png')
         
         // load sounds
         this.load.audio('jump','./jumpSFX.mp3')
@@ -28,8 +29,8 @@ class Menu extends Phaser.Scene {
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT)
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT)
 
-
-    }
+        this.titleImg = this.add.sprite(1900/2,980/2,'title')
+        }
 
     update () {
         if (Phaser.Input.Keyboard.JustDown(keyENTER)) {

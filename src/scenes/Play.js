@@ -34,25 +34,6 @@ class Play extends Phaser.Scene {
             this.life = this.add.sprite(100 * (i + 1) , 100, 'life')
             this.livesArray.push(this.life)
         }
-        
-        let scoreConfig = {
-            fontFamily: '',
-            fontSize: '1000',
-            //backgroundColor: '#F3B141',
-            color: '#843605',
-            align: 'right',
-            padding: {
-                top: 5,
-                bottom: 5,
-            },
-            fixedWidth: 100
-        }
-
-        this.stateTrackerUI = this.add.text(game.config.width/2, game.config.height/2, '', scoreConfig).setOrigin(0.5)
-        this.stateTrackerBossUI = this.add.text(game.config.width/2, game.config.height/2 + 100, '', scoreConfig).setOrigin(0.5)
-
-        this.gameOverUI = this.add.text(game.config.width/2, game.config.height/2, 'Game Over!', scoreConfig).setOrigin(0.5)
-        this.gameOverUI.visible = false
 
         this.physics.add.collider(this.player, this.floor, (player, floor) => {
             this.player.isGround = true
@@ -103,14 +84,7 @@ class Play extends Phaser.Scene {
         this.gameOverTxt.visible = true
         this.player.body.moves = false
         this.isPlaying = false
-        this.gameOverUI.visible = true
         this.bossFSM.transition("dead")
-        if(winner) {
-            this.gameOverUI.text = "You Win!"
-        }
-        else {
-            this.gameOverUI.text = "Game Over"
-        }
     }
 
     update() {
@@ -132,9 +106,6 @@ class Play extends Phaser.Scene {
                 this.updatelifeUI()
             })
 
-            this.stateTrackerBossUI.text = this.bossFSM.state
-            this.stateTrackerUI.text = this.boss.isDamaged
-    
             this.checkSidePlayer()
         }
         else {
@@ -147,6 +118,5 @@ class Play extends Phaser.Scene {
                 this.scene.start('creditsScene')
             }
         }
-        
     }
 }

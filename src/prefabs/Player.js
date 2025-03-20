@@ -29,7 +29,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     checkLives() {
        if (this.lives <= 0) {
-        console.log("DEAD HAHAHHAHAHHAHAH")
        } 
     }
 
@@ -139,7 +138,6 @@ class MoveState extends State {
 
 class HurtState extends State {
     enter(scene, player) {
-        console.log("hurt")
         player.damaged()
         player.checkLives()
         player.gameOver()

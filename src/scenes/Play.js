@@ -7,7 +7,6 @@ class Play extends Phaser.Scene {
         this.background = this.add.image(0,0,'background').setOrigin(0)
         this.background.scaleY = 1.2
         
-        console.log("play started")
         
         
         this.floor = this.physics.add.staticBody(0,685,1999,1000)
@@ -44,7 +43,6 @@ class Play extends Phaser.Scene {
            
             if(!this.boss.isDamaged)
             {
-                console.log("hey")
                 this.playerFSM.transition("attack")
                 this.bossFSM.transition("hurt")
                 if (this.boss.lives <= 0) {
@@ -100,7 +98,6 @@ class Play extends Phaser.Scene {
             this.bossFSM.step()
             this.boss.update()
             this.physics.add.overlap(this.player, this.boss.bombGroup, (player, bomb) => {
-                console.log("collided")
                 this.playerFSM.transition('hurt')
                 bomb.destroy()
                 this.updatelifeUI()
@@ -110,11 +107,9 @@ class Play extends Phaser.Scene {
         }
         else {
             if (Phaser.Input.Keyboard.JustDown(this.keys.keyENTER)) {
-                console.log("restart pressed")
                 this.scene.restart()
             }
             if (Phaser.Input.Keyboard.JustDown(this.keys.keySPACE)) {
-                console.log("restart pressed")
                 this.scene.start('creditsScene')
             }
         }

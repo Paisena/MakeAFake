@@ -36,7 +36,6 @@ class Boss extends Phaser.Physics.Arcade.Sprite {
 
     checkLives() {
             if (this.lives <= 0) {
-                console.log("killed boss")
             }
     }
 
@@ -74,11 +73,9 @@ class BossIdleState extends State {
 
         scene.time.delayedCall(1000, () => {
             if(this.stateMachine.state != "idle") {
-                 console.log("canceld idle trigger")
                  return
             }
 
-            console.log("playing idle decision")
 
             //pick random number and then based on that choose attack 
             let select = Math.floor(Math.random() * 4)
@@ -90,27 +87,23 @@ class BossIdleState extends State {
                 else {
                     this.stateMachine.transition("jump")
                     boss.isJumping = true
-                    //console.log("transionton to jump")
                     return 
                 }
             }
             if (select == 0)
             {
                 this.stateMachine.transition('idle')
-                //console.log("transiotion to idle")
                 return
             }
             if (select == 1)
             {
                 this.stateMachine.transition('attack')
-                //console.log("transition to attack")
                 return
             }
             
             if (select == 3)
             {
                 this.stateMachine.transition("move")
-                //console.log("transition to move")
                 return
             }
         })
@@ -137,7 +130,6 @@ class BossHurtState extends State {
         scene.time.delayedCall(2000, () => {
             boss.isDamaged = false
             this.stateMachine.transition('idle')
-            console.log("damge done")
             boss.alpha =1
             return
         })
